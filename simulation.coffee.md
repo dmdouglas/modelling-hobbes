@@ -35,6 +35,15 @@ First up, lets define some payoff matrixes for various games.  A Prisoner's Dile
 			payoffs[game.toString()]
 
 
+		slaver = (game) ->
+			payoffs = {
+				"1,1": [3,3],
+				"1,0": [1,5],
+				"0,1": [5,1],
+				"0,0": [0,0],
+			}
+			payoffs[game.toString()]
+
 There are 8 possible deterministic single round strategies a player could employ in any 2 player game.  These are specified by their inital move `i`, responding to cooperation move `c`, and responding to defection move `d`.  We'll also name these and give them pretty colours and store them in a list.
 
 
@@ -136,21 +145,22 @@ Now we turn to our game.  The browser will trigger the main game interface `cont
 We also need to define the interaction between agents.  The initial move is dictated by the agent's strategy while subsequent moves are based on an opponents last move.
 
 
-		Agent.prototype.play =  (neighbour, last_game) ->
+		Agent::play =  (neighbour, last_game) ->
 			if last_game.length is 0 then @strategy.i else @next_move last_game
 
-		Agent.prototype.next_move = (last_game) ->
+		Agent::next_move = (last_game) ->
 			if last_game[1] is 1 then @strategy.c else @strategy.d
 
 
-Agents also need to update their strategy after each round.  We will do this only after all contests in a tick have finished and scores have been calculated.
+Agents also need to update their strategy after each round.  We will do this only after all contests in a tick have finished and scores have been calculated.  If the agent score is the equal highest score, then no change to strategy will be made.
 
 
 		update = (agent) ->
 			neighbours = agent.space.neighbourhood(agent.x, agent.y)
 			max = neighbours.reduce (a, b) -> {score: Math.max a.score, b.score}
+			return agent if agent.score is max
 			winners = (neighbour for neighbour in neighbours when neighbour.score is max.score)
-			agent.strategy = winners[Math.floor Math.random() * winners.length].strategy 
+			agent.strategy = winners[Math.floor Math.random() * winners.length].strategy
 			agent
 
 

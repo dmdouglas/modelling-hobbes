@@ -9,6 +9,8 @@ This is the browser file where we pull together different parts of the simulatio
 		height = window.innerHeight || 600
 		width = window.innerWidth || 600
 
+		game = window.location.search.match /\?game=(.+)&?/
+
 
 Next, we'll grab create our svg canvas, apply some event listeners and add it to the DOM.
 
@@ -52,7 +54,7 @@ We then write a loop where each svg circle triggers the move function for its bo
 			.each (d) ->
 				d = simulation.update d
 			.transition()
-			.duration 600
+			.duration 500
 			.attr "cx", (d) -> d.x
 			.attr "cy", (d) -> d.y
 			.attr "r", (d) -> 8
@@ -66,6 +68,5 @@ We then write a loop where each svg circle triggers the move function for its bo
 
 Finally, we run the loop continuous with a half second pause.
 
-	
-		#run()
+
 		setInterval run, 500
