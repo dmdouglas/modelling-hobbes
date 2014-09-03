@@ -15,6 +15,26 @@ First up, lets define some payoff matrixes for various games.  A Prisoner's Dile
 			payoffs[game.toString()]
 
 
+		stag_hunt = (game) ->
+			payoffs = {
+				"1,1": [3,3],
+				"1,0": [0,1],
+				"0,1": [1,0],
+				"0,0": [1,1],
+			}
+			payoffs[game.toString()]			
+
+
+		snow_drift = (game) ->
+			payoffs = {
+				"1,1": [3,3],
+				"1,0": [1,5],
+				"0,1": [5,1],
+				"0,0": [0,0],
+			}
+			payoffs[game.toString()]
+
+
 There are 8 possible deterministic single round strategies a player could employ in any 2 player game.  These are specified by their inital move `i`, responding to cooperation move `c`, and responding to defection move `d`.  We'll also name these and give them pretty colours and store them in a list.
 
 
@@ -26,7 +46,7 @@ There are 8 possible deterministic single round strategies a player could employ
 			{ i: 1, c: 0, d: 0, name: "CTAD", color: "yellow" },
 			{ i: 1, c: 0, d: 1, name: "FPRV", color: "lime" },
 			{ i: 1, c: 1, d: 0, name: "FT4T", color: "lightblue" },
-			{ i: 1, c: 1, d: 1, name: "ALLC", color: "violet" }
+			{ i: 1, c: 1, d: 1, name: "ALLC", color: "violet" },
 		]
 
 

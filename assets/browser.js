@@ -70,7 +70,7 @@ setInterval(run, 500);
 
 
 },{"./assets/d3.min.js":1,"./simulation.coffee.md":3}],3:[function(require,module,exports){
-var Agent, Space, agents, contest, prisoners_dilemma, strategies, update, walk;
+var Agent, Space, agents, contest, prisoners_dilemma, snow_drift, stag_hunt, strategies, update, walk;
 
 prisoners_dilemma = function(game) {
   var payoffs;
@@ -79,6 +79,28 @@ prisoners_dilemma = function(game) {
     "1,0": [0, 5],
     "0,1": [5, 0],
     "0,0": [1, 1]
+  };
+  return payoffs[game.toString()];
+};
+
+stag_hunt = function(game) {
+  var payoffs;
+  payoffs = {
+    "1,1": [3, 3],
+    "1,0": [0, 1],
+    "0,1": [1, 0],
+    "0,0": [1, 1]
+  };
+  return payoffs[game.toString()];
+};
+
+snow_drift = function(game) {
+  var payoffs;
+  payoffs = {
+    "1,1": [3, 3],
+    "1,0": [1, 5],
+    "0,1": [5, 1],
+    "0,0": [0, 0]
   };
   return payoffs[game.toString()];
 };
