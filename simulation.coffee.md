@@ -1,4 +1,4 @@
-# Spatialised Game Theory
+# Leviathan Game Theory
 
 ## Simulation Code
 
@@ -7,20 +7,38 @@ First up, lets define some payoff matrixes for various games.  A Prisoner's Dile
 
 		prisoners_dilemma = (game) ->
 			payoffs = {
-				"1,1": [3,3],
-				"1,0": [0,5],
-				"0,1": [5,0],
-				"0,0": [1,1],
+				"1,1": [7,7],
+				"1,0": [0,10],
+				"0,1": [10,0],
+				"0,0": [2,2],
 			}
 			payoffs[game.toString()]
 
+		prisoners_factor = (game) ->
+			payoffs = {
+				"1,1": [0.55,0.55],
+				"1,0": [0,1],
+				"0,1": [1
+				,0],
+				"0,0": [0.2,0.2],
+			}
+			payoffs[game.toString()]
+
+		wee_wee_prank = (game) ->
+			payoffs = {
+				"1,1": [0,0],
+				"1,0": [-1,5],
+				"0,1": [5,-1],
+				"0,0": [-1,-1],
+			}
+			payoffs[game.toString()]			
 
 		stag_hunt = (game) ->
 			payoffs = {
-				"1,1": [3,3],
-				"1,0": [0,1],
-				"0,1": [1,0],
-				"0,0": [1,1],
+				"1,1": [10,10],
+				"1,0": [0,2],
+				"0,1": [2,0],
+				"0,0": [2,2],
 			}
 			payoffs[game.toString()]			
 
@@ -35,27 +53,18 @@ First up, lets define some payoff matrixes for various games.  A Prisoner's Dile
 			payoffs[game.toString()]
 
 
-		slaver = (game) ->
-			payoffs = {
-				"1,1": [3,3],
-				"1,0": [1,5],
-				"0,1": [5,1],
-				"0,0": [0,0],
-			}
-			payoffs[game.toString()]
-
 There are 8 possible deterministic single round strategies a player could employ in any 2 player game.  These are specified by their inital move `i`, responding to cooperation move `c`, and responding to defection move `d`.  We'll also name these and give them pretty colours and store them in a list.
 
 
 		strategies = [
-			{ i: 0, c: 0, d: 0, name: "ALLD", color: "red" },
-			{ i: 0, c: 0, d: 1, name: "SPRV", color: "green" },
-			{ i: 0, c: 1, d: 0, name: "ST4T", color: "blue" },
-			{ i: 0, c: 1, d: 1, name: "DTAC", color: "indigo" },
-			{ i: 1, c: 0, d: 0, name: "CTAD", color: "yellow" },
-			{ i: 1, c: 0, d: 1, name: "FPRV", color: "lime" },
-			{ i: 1, c: 1, d: 0, name: "FT4T", color: "lightblue" },
-			{ i: 1, c: 1, d: 1, name: "ALLC", color: "violet" },
+			{ i: 0, c: 0, d: 0, name: "HARE", color: "red" },
+			# { i: 0, c: 0, d: 1, name: "SPRV", color: "green" },
+			# { i: 0, c: 1, d: 0, name: "ST4T", color: "blue" },
+			# { i: 0, c: 1, d: 1, name: "DTAC", color: "indigo" },
+			# { i: 1, c: 0, d: 0, name: "CTAD", color: "yellow" },
+			# { i: 1, c: 0, d: 1, name: "FPRV", color: "lime" },
+			# { i: 1, c: 1, d: 0, name: "FT4T", color: "lightblue" },
+			{ i: 1, c: 1, d: 1, name: "STAG", color: "violet" },
 		]
 
 
@@ -64,7 +73,7 @@ Next we model our agents.  These agents exist in a space hold a game strategy wh
 
 		class Agent
 			constructor: (@space, @strategy) ->
-				@strategy = strategies[Math.floor Math.random() * 8] if @strategies?
+				@strategy = strategies[Math.floor Math.random() * 2] if @strategies?
 				@step = 10
 
 
@@ -79,7 +88,7 @@ Agents live in a space which we define as a 2D space representing the problem do
 We populate our space from an agent profile.  This profile contains an array such as `[0, 250, 250]` which tells our space to create 250 agents each based on the the 2nd and 3rd strategies profiles defined earlier.
 
 
-		Space.prototype.populate = (agent_profile) ->
+		Space::populate = (agent_profile) ->
 			@agents = []
 			type = 0
 			for i,v in agent_profile
@@ -92,7 +101,7 @@ Agents can be arranged in a space either deterministically or stochastically, an
 The what-algorithm is a modified Fisher-Yates shuffle that is applied stochastically if the what-cluster value is exceded.  The where-algorithm orders agents in straight lines or stochastically if the where-cluster is exceded.
 
 
-		Space.prototype.cluster = (where, what) ->
+		Space::cluster = (where, what) ->
 			#what
 			for i in [@agents.length-1..1]
 				unless what > Math.random()
@@ -115,8 +124,10 @@ The what-algorithm is a modified Fisher-Yates shuffle that is applied stochastic
 
 In spacial arranements, everybody is next to somebody - their neighbour.  A neighbourhood is simply a list of all the agents within an agent's depth perception.  Here we return everyone within a square from an x, y coordinate.
 
+This could in future be extended to allow von Newman neighbourhoods, and Moore neighbourhoods
 
-		Space.prototype.neighbourhood = (x, y) ->
+
+		Space::neighbourhood = (x, y) ->
 			@depth = Math.sqrt(@width * @height / @agents.length) + 1
 			neighbours = []
 			for other in @agents
@@ -129,15 +140,16 @@ Now we turn to our game.  The browser will trigger the main game interface `cont
 
 
 		contest = (agent) ->
-			agent.score = 0
+			agent.score = 5
 			last_game = []
 			rounds = 10
 			neighbours = agent.space.neighbourhood(agent.x, agent.y)
 			for neighbour in neighbours
 				for round in [0..rounds]
 					last_game = [agent.play(neighbour, last_game), neighbour.play(agent, last_game)]
-					scores = prisoners_dilemma last_game
-					agent.score += scores[0]
+					#scores = if Math.random() > 0.5 then prisoners_dilemma last_game else wee_wee_prank last_game
+					scores = prisoners_factor last_game
+					agent.score += scores[0] * agent.score
 			walk agent
 			agent
 			
@@ -183,7 +195,7 @@ Now that we have defined our model, we need some functions to initiate and contr
 
 
 		agents = (height, width) ->
-			space = new Space(height, width, [250, 250, 250, 250, 250, 250, 250, 250])
+			space = new Space height, width, [1000, 1000]
 			space.cluster 1.0, 0.0
 
 

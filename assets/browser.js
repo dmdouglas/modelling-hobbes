@@ -72,15 +72,37 @@ setInterval(run, 500);
 
 
 },{"./assets/d3.min.js":1,"./simulation.coffee.md":3}],3:[function(require,module,exports){
-var Agent, Space, agents, contest, prisoners_dilemma, slaver, snow_drift, stag_hunt, strategies, update, walk;
+var Agent, Space, agents, contest, prisoners_dilemma, prisoners_factor, snow_drift, stag_hunt, strategies, update, walk, wee_wee_prank;
 
 prisoners_dilemma = function(game) {
   var payoffs;
   payoffs = {
-    "1,1": [3, 3],
-    "1,0": [0, 5],
-    "0,1": [5, 0],
-    "0,0": [1, 1]
+    "1,1": [7, 7],
+    "1,0": [0, 10],
+    "0,1": [10, 0],
+    "0,0": [2, 2]
+  };
+  return payoffs[game.toString()];
+};
+
+prisoners_factor = function(game) {
+  var payoffs;
+  payoffs = {
+    "1,1": [0.55, 0.55],
+    "1,0": [0, 1],
+    "0,1": [1, 0],
+    "0,0": [0.2, 0.2]
+  };
+  return payoffs[game.toString()];
+};
+
+wee_wee_prank = function(game) {
+  var payoffs;
+  payoffs = {
+    "1,1": [0, 0],
+    "1,0": [-1, 5],
+    "0,1": [5, -1],
+    "0,0": [-1, -1]
   };
   return payoffs[game.toString()];
 };
@@ -88,10 +110,10 @@ prisoners_dilemma = function(game) {
 stag_hunt = function(game) {
   var payoffs;
   payoffs = {
-    "1,1": [3, 3],
-    "1,0": [0, 1],
-    "0,1": [1, 0],
-    "0,0": [1, 1]
+    "1,1": [10, 10],
+    "1,0": [0, 2],
+    "0,1": [2, 0],
+    "0,0": [2, 2]
   };
   return payoffs[game.toString()];
 };
@@ -107,65 +129,18 @@ snow_drift = function(game) {
   return payoffs[game.toString()];
 };
 
-slaver = function(game) {
-  var payoffs;
-  payoffs = {
-    "1,1": [3, 3],
-    "1,0": [1, 5],
-    "0,1": [5, 1],
-    "0,0": [0, 0]
-  };
-  return payoffs[game.toString()];
-};
-
 strategies = [
   {
     i: 0,
     c: 0,
     d: 0,
-    name: "ALLD",
+    name: "HARE",
     color: "red"
   }, {
-    i: 0,
-    c: 0,
-    d: 1,
-    name: "SPRV",
-    color: "green"
-  }, {
-    i: 0,
-    c: 1,
-    d: 0,
-    name: "ST4T",
-    color: "blue"
-  }, {
-    i: 0,
-    c: 1,
-    d: 1,
-    name: "DTAC",
-    color: "indigo"
-  }, {
-    i: 1,
-    c: 0,
-    d: 0,
-    name: "CTAD",
-    color: "yellow"
-  }, {
-    i: 1,
-    c: 0,
-    d: 1,
-    name: "FPRV",
-    color: "lime"
-  }, {
-    i: 1,
-    c: 1,
-    d: 0,
-    name: "FT4T",
-    color: "lightblue"
-  }, {
     i: 1,
     c: 1,
     d: 1,
-    name: "ALLC",
+    name: "STAG",
     color: "violet"
   }
 ];
@@ -175,7 +150,7 @@ Agent = (function() {
     this.space = space;
     this.strategy = strategy;
     if (this.strategies != null) {
-      this.strategy = strategies[Math.floor(Math.random() * 8)];
+      this.strategy = strategies[Math.floor(Math.random() * 2)];
     }
     this.step = 10;
   }
@@ -257,7 +232,7 @@ Space.prototype.neighbourhood = function(x, y) {
 
 contest = function(agent) {
   var last_game, neighbour, neighbours, round, rounds, scores, _i, _j, _len;
-  agent.score = 0;
+  agent.score = 5;
   last_game = [];
   rounds = 10;
   neighbours = agent.space.neighbourhood(agent.x, agent.y);
@@ -265,8 +240,8 @@ contest = function(agent) {
     neighbour = neighbours[_i];
     for (round = _j = 0; 0 <= rounds ? _j <= rounds : _j >= rounds; round = 0 <= rounds ? ++_j : --_j) {
       last_game = [agent.play(neighbour, last_game), neighbour.play(agent, last_game)];
-      scores = prisoners_dilemma(last_game);
-      agent.score += scores[0];
+      scores = prisoners_factor(last_game);
+      agent.score += scores[0] * agent.score;
     }
   }
   walk(agent);
@@ -338,7 +313,7 @@ walk = function(agent) {
 
 agents = function(height, width) {
   var space;
-  space = new Space(height, width, [250, 250, 250, 250, 250, 250, 250, 250]);
+  space = new Space(height, width, [1000, 1000]);
   return space.cluster(1.0, 0.0);
 };
 
