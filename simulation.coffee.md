@@ -9,7 +9,7 @@ First up, lets define the entity in our simulation.  We'll start with two - agen
 		class Agent
 			constructor: (@space, @strategy) ->
 				@strategy = strategies[Math.floor Math.random() * 2] if @strategies?
-				@step = 10
+				@step = 5
 
 
 Agents live in a space which we define as a 2D space representing the problem domain.  When we crate a space, we populate it with agents, and give it a neighbourhood depth value.
@@ -76,10 +76,10 @@ Now, lets define some payoff matrixes for various games. We will create a generi
 
 		prisoners_dilemma = (game) ->
 			payoffs = {
-				"1,1": [7,7],
-				"1,0": [0,10],
-				"0,1": [10,0],
-				"0,0": [2,2],
+				"1,1": [3,3],
+				"1,0": [0,5],
+				"0,1": [5,0],
+				"0,0": [1,1],
 			}
 			payoffs[game.toString()]
 
@@ -103,10 +103,10 @@ Now, lets define some payoff matrixes for various games. We will create a generi
 
 		stag_hunt = (game) ->
 			payoffs = {
-				"1,1": [10,10],
-				"1,0": [0,2],
-				"0,1": [2,0],
-				"0,0": [2,2],
+				"1,1": [3,3],
+				"1,0": [0,1],
+				"0,1": [1,0],
+				"0,0": [1,1],
 			}
 			payoffs[game.toString()]			
 
@@ -121,18 +121,43 @@ Now, lets define some payoff matrixes for various games. We will create a generi
 			payoffs[game.toString()]
 
 
+		gang_war = (game) ->
+			payoffs = {
+				"1,1": [1,1],
+				"1,0": [-4,3],
+				"1,2": [-4,5],
+				"1,3": [1,0],
+				"0,1": [3,-3],
+				"0,0": [-1,-1],
+				"0,2": [-3,3],
+				"0,3": [-10,0],
+				"2,1": [5,-4],
+				"2,0": [3,-4],
+				"2,2": [-3,-3],
+				"2,3": [-10,0],
+				"3,1": [0,1],
+				"3,0": [0,-10],
+				"3,2": [0,-10],
+				"3,3": [0,0],				
+			}
+			payoffs[game.toString()]
+
 Next, lets define some strategies a player could employ in any 2 player game.  These are specified by their inital move `i`, responding to cooperation move `c`, and responding to defection move `d`.  We'll also name these and give them pretty colours and store them in a list.
 
 
 		strategies = [
-			{ i: 0, c: 0, d: 0, name: "HARE", color: "brown" },
+			{ i: 1, c: 1, d: 1, name: "FARM", color: "green" },
+			{ i: 0, c: 0, d: 0, name: "STEAL", color: "blue" },
+			{ i: 2, c: 2, d: 2, name: "GANG", color: "red" },
+			{ i: 3, c: 3, d: 3, name: "KING", color: "goldenrod" },
+			# { i: 0, c: 0, d: 0, name: "ALLD", color: "red" },
 			# { i: 0, c: 0, d: 1, name: "SPRV", color: "green" },
-			# { i: 0, c: 1, d: 0, name: "ST4T", color: "blue" },
+			# { i: 0, c: 1, d: 0, name: "ST4T", color: "lightblue" },
 			# { i: 0, c: 1, d: 1, name: "DTAC", color: "indigo" },
 			# { i: 1, c: 0, d: 0, name: "CTAD", color: "yellow" },
 			# { i: 1, c: 0, d: 1, name: "FPRV", color: "lime" },
-			# { i: 1, c: 1, d: 0, name: "FT4T", color: "lightblue" },
-			{ i: 1, c: 1, d: 1, name: "STAG", color: "green" },
+			# { i: 1, c: 1, d: 0, name: "FT4T", color: "blue" },
+			# { i: 1, c: 1, d: 1, name: "ALLC", color: "violet" },
 		]
 
 
@@ -147,8 +172,8 @@ Now we turn to our game.  The browser will trigger the main game interface `inte
 			for neighbour in neighbours
 				for round in [0..rounds]
 					last_game = [agent.play(neighbour, last_game), neighbour.play(agent, last_game)]
-					scores = prisoners_dilemma last_game
-					agent.score += scores[0] + agent.score
+					scores = gang_war last_game
+					agent.score += scores[0]
 			walk agent
 			agent
 			
@@ -175,9 +200,10 @@ Agents also need to update their strategy after each round.  We will do this onl
 		update = (agent) ->
 			neighbours = agent.space.neighbourhood(agent.x, agent.y)
 			max = neighbours.reduce (a, b) -> {score: Math.max a.score, b.score}
-			return agent if agent.score is max
+			return agent if agent.score is max or agent.strategy.i is 3
 			winners = (neighbour for neighbour in neighbours when neighbour.score is max.score)
 			agent.strategy = winners[Math.floor Math.random() * winners.length].strategy
+			agent.strategy = strategies[0] if agent.score < 0
 			agent
 
 
@@ -200,7 +226,7 @@ Now that we have defined our model, we need some functions to initiate and contr
 
 
 		agents = (height, width) ->
-			space = new Space height, width, [1000, 1000]
+			space = new Space height, width, [1985, 10, 5, 25]
 			space.cluster 1.0, 0.0
 
 

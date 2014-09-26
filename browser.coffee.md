@@ -59,11 +59,10 @@ We then write a loop where each svg circle triggers the move function for its bo
 			.duration 500
 			.attr "cx", (d) -> d.x
 			.attr "cy", (d) -> d.y
-			.attr "r", (d) -> 8
+			.attr "r", (d) -> 
+				if d.strategy.i is 3 then 10 else Math.max 3, (d.score / 10)
 			.attr "title", (d) -> "#{d.strategy.name} - #{d.score}"
 			.style "fill", (d) -> d.strategy.color
-
-			simulation.tick(space)
 		
 
 		run = () ->
