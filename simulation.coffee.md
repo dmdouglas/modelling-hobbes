@@ -2,73 +2,8 @@
 
 ## Simulation Code
 
-First up, lets define some payoff matrixes for various games.  A Prisoner's Dilemma is a two (or more) player symmertic non-cooperative non-zero sum game that has payoffs for each player based on the behaviour of other players.  We will create a generic function that returns a tuple representing conditional player outcomes, based on a tuple of player actions eg `[1,0]` for player 1 cooperate & player 2 defect.
 
-
-		prisoners_dilemma = (game) ->
-			payoffs = {
-				"1,1": [7,7],
-				"1,0": [0,10],
-				"0,1": [10,0],
-				"0,0": [2,2],
-			}
-			payoffs[game.toString()]
-
-		prisoners_factor = (game) ->
-			payoffs = {
-				"1,1": [0.55,0.55],
-				"1,0": [0,1],
-				"0,1": [1
-				,0],
-				"0,0": [0.2,0.2],
-			}
-			payoffs[game.toString()]
-
-		wee_wee_prank = (game) ->
-			payoffs = {
-				"1,1": [0,0],
-				"1,0": [-1,5],
-				"0,1": [5,-1],
-				"0,0": [-1,-1],
-			}
-			payoffs[game.toString()]			
-
-		stag_hunt = (game) ->
-			payoffs = {
-				"1,1": [10,10],
-				"1,0": [0,2],
-				"0,1": [2,0],
-				"0,0": [2,2],
-			}
-			payoffs[game.toString()]			
-
-
-		snow_drift = (game) ->
-			payoffs = {
-				"1,1": [3,3],
-				"1,0": [1,5],
-				"0,1": [5,1],
-				"0,0": [0,0],
-			}
-			payoffs[game.toString()]
-
-
-There are 8 possible deterministic single round strategies a player could employ in any 2 player game.  These are specified by their inital move `i`, responding to cooperation move `c`, and responding to defection move `d`.  We'll also name these and give them pretty colours and store them in a list.
-
-
-		strategies = [
-			{ i: 0, c: 0, d: 0, name: "HARE", color: "red" },
-			# { i: 0, c: 0, d: 1, name: "SPRV", color: "green" },
-			# { i: 0, c: 1, d: 0, name: "ST4T", color: "blue" },
-			# { i: 0, c: 1, d: 1, name: "DTAC", color: "indigo" },
-			# { i: 1, c: 0, d: 0, name: "CTAD", color: "yellow" },
-			# { i: 1, c: 0, d: 1, name: "FPRV", color: "lime" },
-			# { i: 1, c: 1, d: 0, name: "FT4T", color: "lightblue" },
-			{ i: 1, c: 1, d: 1, name: "STAG", color: "violet" },
-		]
-
-
-Next we model our agents.  These agents exist in a space hold a game strategy which is assigned randomly if none is provided.  We also give them a step length in case they will be walking.
+First up, lets define the entity in our simulation.  We'll start with two - agents and the space they exist in.  Agents exist in a space hold a game strategy which is assigned randomly if none is provided.  We also give them a step length in case they will be walking.
 
 
 		class Agent
@@ -136,10 +71,75 @@ This could in future be extended to allow von Newman neighbourhoods, and Moore n
 			neighbours
 
 
-Now we turn to our game.  The browser will trigger the main game interface `contest(agent)` every tick.  Each agent finds their neighbours and plays against them for a number or rounds, with the agent score calcuated from the payoff matrix.  In every contest, we set the agent score and last_game values to 0.  We also throw in some Brownian motion to encourage disequilibrium.
+Now, lets define some payoff matrixes for various games. We will create a generic function that returns a tuple representing conditional player outcomes, based on a tuple of player actions eg `[1,0]` for player 1 cooperate & player 2 defect.
 
 
-		contest = (agent) ->
+		prisoners_dilemma = (game) ->
+			payoffs = {
+				"1,1": [7,7],
+				"1,0": [0,10],
+				"0,1": [10,0],
+				"0,0": [2,2],
+			}
+			payoffs[game.toString()]
+
+		prisoners_factor = (game) ->
+			payoffs = {
+				"1,1": [0.55,0.55],
+				"1,0": [0,1],
+				"0,1": [1,0],
+				"0,0": [0.2,0.2],
+			}
+			payoffs[game.toString()]
+
+		wee_wee_prank = (game) ->
+			payoffs = {
+				"1,1": [0,0],
+				"1,0": [-1,5],
+				"0,1": [5,-1],
+				"0,0": [-1,-1],
+			}
+			payoffs[game.toString()]			
+
+		stag_hunt = (game) ->
+			payoffs = {
+				"1,1": [10,10],
+				"1,0": [0,2],
+				"0,1": [2,0],
+				"0,0": [2,2],
+			}
+			payoffs[game.toString()]			
+
+
+		snow_drift = (game) ->
+			payoffs = {
+				"1,1": [3,3],
+				"1,0": [1,5],
+				"0,1": [5,1],
+				"0,0": [0,0],
+			}
+			payoffs[game.toString()]
+
+
+Next, lets define some strategies a player could employ in any 2 player game.  These are specified by their inital move `i`, responding to cooperation move `c`, and responding to defection move `d`.  We'll also name these and give them pretty colours and store them in a list.
+
+
+		strategies = [
+			{ i: 0, c: 0, d: 0, name: "HARE", color: "brown" },
+			# { i: 0, c: 0, d: 1, name: "SPRV", color: "green" },
+			# { i: 0, c: 1, d: 0, name: "ST4T", color: "blue" },
+			# { i: 0, c: 1, d: 1, name: "DTAC", color: "indigo" },
+			# { i: 1, c: 0, d: 0, name: "CTAD", color: "yellow" },
+			# { i: 1, c: 0, d: 1, name: "FPRV", color: "lime" },
+			# { i: 1, c: 1, d: 0, name: "FT4T", color: "lightblue" },
+			{ i: 1, c: 1, d: 1, name: "STAG", color: "green" },
+		]
+
+
+Now we turn to our game.  The browser will trigger the main game interface `interact(agent)` every tick.  Each agent finds their neighbours and plays against them for a number or rounds, with the agent score calcuated from the payoff matrix.  In every contest, we set the agent score and last_game values to 0.  We also throw in some Brownian motion to encourage disequilibrium.
+
+
+		interact = (agent) ->
 			agent.score = 5
 			last_game = []
 			rounds = 10
@@ -147,12 +147,17 @@ Now we turn to our game.  The browser will trigger the main game interface `cont
 			for neighbour in neighbours
 				for round in [0..rounds]
 					last_game = [agent.play(neighbour, last_game), neighbour.play(agent, last_game)]
-					#scores = if Math.random() > 0.5 then prisoners_dilemma last_game else wee_wee_prank last_game
-					scores = prisoners_factor last_game
-					agent.score += scores[0] * agent.score
+					scores = prisoners_dilemma last_game
+					agent.score += scores[0] + agent.score
 			walk agent
 			agent
 			
+
+I'm also going to define a system wide tick rather than an agent based interaction.
+
+		tick = (space) ->
+			console.log space
+
 
 We also need to define the interaction between agents.  The initial move is dictated by the agent's strategy while subsequent moves are based on an opponents last move.
 
@@ -202,7 +207,7 @@ Now that we have defined our model, we need some functions to initiate and contr
 Finally, we declare our public API so that other modules can access it.
 
 
-		module.exports = {agents: agents, contest: contest, update: update}
+		module.exports = {agents: agents, interact: interact, update: update, tick: tick}
 
 
 That's it. The simulation complete.
