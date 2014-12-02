@@ -5,7 +5,7 @@
   <title>Leviathan & Game Theory | Dave Kinkead</title>
   <link rel="stylesheet" type="text/css" media="all" href="assets/styles.css"/>
   <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="assets/jquery-ui-1.11.2.custom/jquery-ui.theme.min.css">
+  <link rel="stylesheet" href="assets/jquery-ui-1.11.1.custom/jquery-ui.theme.min.css">
 </head>
 
 <body>
@@ -14,14 +14,10 @@
     <h1>Leviathan</h1>
     <p>Modelling Hobbes' Leviathan as a prisoners' dilemma.</p>
   </div>
-  
-  <div id="controls" class="ui-widget-header ui-corner-all">
-    <h1>Leviathan</h1>
-    <p>Modelling Hobbes' Leviathan as a prisoners' dilemma.</p>
-    <button id="start">Start</button>
-    <button id="stop">Stop</button>
+  <div id="controls">
+    <input type="start" value="Start">
+    <input type="stop" value="Stop">
   </div>
-  
   <div id="space">
   </div>
   <footer>

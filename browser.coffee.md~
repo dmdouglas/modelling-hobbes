@@ -5,11 +5,10 @@ This is the browser file where we pull together different parts of the simulatio
 
 		d3 = require './assets/d3.min.js'
 		simulation = require './simulation.coffee.md'
-		ui = require './assets/jquery-ui-1.11.2.custom/jquery-ui.js'
+		ui = require './assets/jquery-ui-1.11.1.custom/jquery-ui.js'
 		running = true
-		height = window.innerHeight #|| 600
-		#width = window.innerWidth || 600
-		width = window.innerWidth - (window.innerWidth / 4)
+		height = window.innerHeight || 600
+		width = window.innerWidth || 600
 		space = null
 
 		game = window.location.search.match /\?game=(.+)&?/
@@ -19,27 +18,19 @@ Now we generate the user interfaces for the simulation controls. This includes s
 
 		jQuery ->
 			$ = jQuery
-			$( "#stop" ).button({
-				text: false,
-				icons: {
-					primary: "ui-icon-stop"
-					}
-			})
-				.on "click", () ->
-					running = false
-					#alert 'Simulation stopped'
-					#preventDefault()
-					$.defaultPrevented
+			$("input[type=stop]")
+				.button()
+					.on "click", () ->
+						running = false
+						alert 'Simulation stopped'
+						#preventDefault()
+						$.defaultPrevented
 
-			$( "#start" ).button({
-				text: false;
-				icons: {
-					primary: "ui-icon-play"
-					}
-			})
-				.on "click", () ->
-					running = true
-					$.defaultPrevented
+			$("input[type=start]")
+				.button()
+					.on "click", () ->
+						running = true
+						$.defaultPrevented
 
 Next, we'll grab create our svg canvas, apply some event listeners and add it to the DOM.
 
@@ -47,19 +38,17 @@ Next, we'll grab create our svg canvas, apply some event listeners and add it to
 		canvas = d3.select("#space")
 					.append("svg:svg")
 					.attr("height", height)
-					.attr("width", width)
-					#.on "click", () ->
-					#	running = false
-					#	alert 'Simulation stopped'
+					.attr("width", (width - (width/4)))
+					.on "click", () ->
+						running = false
+						alert 'Simulation stopped'
 
-		#info = d3.select("#info")
-		#info = d3.select("#controls")
-		#			.on "click", () ->
-		#				d3.select("#controls p").style "display", "none"
-		#				d3.select("#controls h1").style "font-size", "1em"
-		
+		info = d3.select("#info")
+					.on "click", () ->
+						d3.select("#info p").style "display", "none"
+						d3.select("#info h1").style "font-size", "1em"
 
-Now we need to create SVG circles to represent our agents and bind them to the actual agents from the simulation.  The `d` in the functions here is the D3js accessor to the agent data.
+Now we need to createsvg circles to represent our agents and bind them to the actual agents from the simulation.  The `d` in the functions here is the D3js accessor to the agent data.
 
 	
 		populate = () ->
