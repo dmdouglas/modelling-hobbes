@@ -1,6 +1,6 @@
 * { margin: 0; padding: 0; text-align: center; }
 
-html { font-size: 28px; font-family: 'Lato', sans-serif; }
+html { font-size: 20px; font-family: 'Lato', sans-serif; }
 
 #info {
 	margin: auto; height: 600px; width: 50%;
@@ -10,10 +10,26 @@ html { font-size: 28px; font-family: 'Lato', sans-serif; }
 	opacity: 0.9; 
 }
 
-h1 { text-transform: uppercase; font-size: 300%; line-height: 1em; margin-bottom: 1em; font-weight: 900; overflow: hidden;}
+h1 { text-transform: uppercase; font-size: 100%; line-height: 1em; margin-bottom: 1em; font-weight: 900; overflow: hidden;}
 p { background: #DFDFDF; opacity: 0.8; padding: 0.5em 0.25em; }
 
-#space { margin: 0 auto; background: #FFF; }
+#controls {
+    position: absolute;
+    height: auto; width: 25%;
+    top: 0; left: 0;
+    color: #333;
+    background: #DFDFDF;
+    padding: 4px;
+    display: inline-block;
+    margin: auto;
+}
+
+#space {
+    position: relative;
+    margin: 0 auto;
+    background: #FFF;
+    width: 50%;
+}
 
 footer { position: absolute; right: 15px; bottom: 15px; text-align: right; color: #666; font-size: 0.8em; }
 footer a { color: #333; }

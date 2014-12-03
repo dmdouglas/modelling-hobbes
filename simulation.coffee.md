@@ -2,8 +2,7 @@
 
 ## Simulation Code
 
-
-First up, lets define the entity in our simulation.  We'll start with two - agents and the space they exist in.  Agents exist in a space hold a game strategy which is assigned randomly if none is provided.  We also give them a step length in case they will be walking.
+First let's define the entity in our simulation.  We'll start with two - agents and the space they exist in.  Agents exist in a space hold a game strategy which is assigned randomly if none is provided.  We also give them a step length in case they will be walking.
 
 
 		class Agent
@@ -233,7 +232,7 @@ Now that we have defined our model, we need some functions to initiate and contr
 Finally, we declare our public API so that other modules can access it.
 
 
-		module.exports = {agents: agents, interact: interact, update: update, tick: tick}
+		module.exports = {agents: agents, interact: interact, update: update, tick: tick, strategies: strategies}
 
 
 That's it. The simulation complete.

@@ -20,7 +20,7 @@ Now we generate the user interfaces for the simulation controls. This includes s
 		jQuery ->
 			$ = jQuery
 			$( "#stop" ).button({
-				text: false,
+				text: false;
 				icons: {
 					primary: "ui-icon-stop"
 					}
@@ -29,37 +29,67 @@ Now we generate the user interfaces for the simulation controls. This includes s
 					running = false
 					#alert 'Simulation stopped'
 					#preventDefault()
-					$.defaultPrevented
+					$.defaultPrevented()
 
 			$( "#start" ).button({
-				text: false;
 				icons: {
 					primary: "ui-icon-play"
 					}
+				text: false;
 			})
 				.on "click", () ->
 					running = true
-					$.defaultPrevented
+					$.defaultPrevented()
 
-Next, we'll grab create our svg canvas, apply some event listeners and add it to the DOM.
+			$( "#reset" ).button({
+				text: false;
+				icons: {
+					primary: "ui-icon-eject"
+					}
+			})
+				.on "click", () ->
+					running = false
+					populate()
+					running = true
+					$.defaultPrevented()
 
+					
+Next, we'll grab create our svg canvas that will contain our agents and add it to the DOM.
 
 		canvas = d3.select("#space")
 					.append("svg:svg")
 					.attr("height", height)
 					.attr("width", width)
-					#.on "click", () ->
-					#	running = false
-					#	alert 'Simulation stopped'
 
-		#info = d3.select("#info")
-		#info = d3.select("#controls")
-		#			.on "click", () ->
-		#				d3.select("#controls p").style "display", "none"
-		#				d3.select("#controls h1").style "font-size", "1em"
-		
 
-Now we need to create SVG circles to represent our agents and bind them to the actual agents from the simulation.  The `d` in the functions here is the D3js accessor to the agent data.
+Now we create the graphics for the simulation legend. We take the list of strategies and draw a list of circles with the name of the strategy they represent next to them.
+
+		info = d3.select("#controls")
+			      .append("svg:svg")
+				  .attr("height", height)
+
+		legend = simulation.strategies
+		info.selectAll "circle"
+			 .data(legend)
+			 .enter()
+			 .append("circle")
+			 .attr "cx", (d, i) -> 50
+			 .attr "cy", (d, i) -> (i * 50) + 25
+			 .style "fill", (d) -> d.color 
+			 .style "opacity", 0.5
+			 .attr "r", 8
+			 .attr "title", (d) -> d.name
+
+		info.selectAll("text")
+			 .data(legend)
+			 .enter()
+			 .append("text")
+			 .text (d) -> d.name
+			 .attr "x", (d, i) -> 75
+			 .attr "y", (d, i) -> (i * 50) + 30
+
+
+Now we need to create svg circles to represent our agents and bind them to the actual agents from the simulation.  The `d` in the functions here is the D3js accessor to the agent data.
 
 	
 		populate = () ->
@@ -72,7 +102,6 @@ Now we need to create SVG circles to represent our agents and bind them to the a
 				.attr "r", 8
 				.attr "cx", (d) -> d.x
 				.attr "cy", (d) -> d.y
-
 		populate()
 
 

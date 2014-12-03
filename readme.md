@@ -52,4 +52,15 @@ The coffeescript files need to be built and compiled into `browser.js`.  To buil
 
 You'll need to install browserify and coffeeify if you haven't already.
 
+
+## Modified UI
+
+I've added a sidebar that includes some basic controls to start and stop the simulation that Dave Kinkead has developed. The sidebar also lists the different strategies used and the colours used to represent them.
+
+The UI is still a work-in-progress and uses jQuery. I'd like to add a listing of what the different strategies mean and perhaps some controls to change the conditions of the simulation.
+
+In summary, don't blame Dave Kinkead for the UI.
+
+- DMD 3/12/14
+
 Licensed under a CC-BY-SA license.
